@@ -1,38 +1,40 @@
 #include "producers.h"
-#include "io.h"
 
 void *Producer(void *arg){
-    buffer * _rides = (buffer*) arg;
-    int rideID = _rides->producerId;
-    ++_rides->producerId;
-    while(!sem_trywait(&_rides->limit)){
+    //create a new buffer struct to reference incoming buffer
+    buffer * new_rides = (buffer*) arg;
+    int rideID = new_rides->producerId;
+    ++new_rides->producerId;
+    while(!sem_trywait(&new_rides->limit)){
         if(rideID == 0){
-            if(_rides->produceRideHumanBool){
-                usleep(_rides->produceRideHuman * 1000);
+            if(new_rides->produceRideHumanBool){
+                //multiplies wait time by 1000 sinc usleep is in microseconds
+                usleep(new_rides->produceRideHuman * MULTIPLE_FOR_SECONDS);
             }
-            sem_wait(&_rides->maxHumanDrivers);
+            sem_wait(&new_rides->maxHumanDrivers);
         }
         else if(rideID == 1){
-            if(_rides->produceRideAutonomusBool){
-                usleep(_rides->produceRideAutonomus * 1000);
+            if(new_rides->produceRideAutonomusBool){
+                //multiplies wait time by 1000 sinc usleep is in microseconds
+                usleep(new_rides->produceRideAutonomus * MULTIPLE_FOR_SECONDS); 
             }
         }
         Request *request = new Request(rideID);
-        sem_wait(&_rides->availableSlots); //Check for avilable slots in queue
-        sem_wait(&_rides->mutex); //Critical sectionn check for entrance
+        sem_wait(&new_rides->availableSlots); //Check for avilable slots in queue
+        sem_wait(&new_rides->mutex); //Critical sectionn check for entrance
 
-        _rides->ridesQueue->push(request);
-        ++_rides->inQueue[rideID];
-        ++_rides->Produced[rideID];
+        new_rides->ridesQueue->push(request);
+        ++new_rides->inRequestQueue[rideID];
+        ++new_rides->Produced[rideID];
 
         if(rideID == 0){
-            io_add_type(HumanDriver, _rides->inQueue, _rides->Produced);
+            io_add_type(HumanDriver, new_rides->inRequestQueue, new_rides->Produced);
         }
         else if(rideID == 1){
-            io_add_type(RoboDriver, _rides->inQueue, _rides->Produced);
+            io_add_type(RoboDriver, new_rides->inRequestQueue, new_rides->Produced);
         }
-        sem_post(&_rides->mutex);
-        sem_post(&_rides->unconsumed);
+        sem_post(&new_rides->mutex);
+        sem_post(&new_rides->unconsumed);
     }
     return NULL;
 }

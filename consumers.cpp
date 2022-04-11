@@ -1,55 +1,55 @@
 #include "consumers.h"
-#include "io.h"
 
 void *Consumer(void *arg){
-    buffer *_rides = (buffer*) arg;
+    //create a new buffer struct to reference incoming buffer
+    buffer *new_rides = (buffer*) arg;
     Request *request;
-    int consumer = _rides->consumerId;
-    ++_rides->consumerId;
-    while(_rides->consumed != MAX_RIDES){
-        while(!sem_trywait(&_rides->unconsumed)){
+    int consumer = new_rides->consumerId;
+    ++new_rides->consumerId;
+    while(new_rides->consumed != new_rides->maxRides){
+        while(!sem_trywait(&new_rides->unconsumed)){
             if(consumer == 0){
-                if(_rides->costSaveRideBool){
-                    usleep(_rides->costSaveTime * 1000);
+                if(new_rides->costSaveRideBool){
+                    usleep(new_rides->costSaveTime * MULTIPLE_FOR_SECONDS);
                 }
             }
             else if(consumer == 1){
-                if(_rides->fastRideBool){
-                    usleep(_rides->fastRideTime * 1000);
+                if(new_rides->fastRideBool){
+                    usleep(new_rides->fastRideTime * MULTIPLE_FOR_SECONDS);
                 }
             }
-            sem_wait(&_rides->mutex); //Critical section
-            request = _rides->ridesQueue->front();
-            --_rides->inQueue[request->request_id];
-            _rides->ridesQueue->pop();
+            sem_wait(&new_rides->mutex); //Critical section
+            request = new_rides->ridesQueue->front();
+            --new_rides->inRequestQueue[request->request_id];
+            new_rides->ridesQueue->pop();
 
-            ++_rides->totals[consumer][request->request_id]; 
+            ++new_rides->totals[consumer][request->request_id]; 
 
             //Print statements
             if(consumer == 0){
-                int costSave[RequestTypeN] = {_rides->totals[consumer][0], _rides->totals[consumer][1]};
+                int costSave[RequestTypeN] = {new_rides->totals[consumer][0], new_rides->totals[consumer][1]};
                 if(request->request_id == 0){
-                    io_remove_type(CostAlgoDispatch, HumanDriver, _rides->inQueue, costSave);
+                    io_remove_type(CostAlgoDispatch, HumanDriver, new_rides->inRequestQueue, costSave);
                 }
                 if(request->request_id == 1){
-                    io_remove_type(CostAlgoDispatch, RoboDriver, _rides->inQueue, costSave);
+                    io_remove_type(CostAlgoDispatch, RoboDriver, new_rides->inRequestQueue, costSave);
                 }
             }
             else if(consumer == 1){
-                int fastRide[RequestTypeN] = {_rides->totals[consumer][0], _rides->totals[consumer][1]};
+                int fastRide[RequestTypeN] = {new_rides->totals[consumer][0], new_rides->totals[consumer][1]};
                 if(request->request_id == 0){
-                    io_remove_type(FastAlgoDispatch, HumanDriver, _rides->inQueue, fastRide);
+                    io_remove_type(FastAlgoDispatch, HumanDriver, new_rides->inRequestQueue, fastRide);
                 }
                 if(request->request_id == 1){
-                    io_remove_type(FastAlgoDispatch, RoboDriver, _rides->inQueue, fastRide);
+                    io_remove_type(FastAlgoDispatch, RoboDriver, new_rides->inRequestQueue, fastRide);
                 }
             }
             if(request->request_id == 0){
-                sem_post(&_rides->maxHumanDrivers);
+                sem_post(&new_rides->maxHumanDrivers);
             }
-            sem_post(&_rides->mutex);
-            sem_post(&_rides->availableSlots);
-            ++_rides->consumed;
+            sem_post(&new_rides->mutex);
+            sem_post(&new_rides->availableSlots);
+            ++new_rides->consumed;
         } 
     }
     return NULL;

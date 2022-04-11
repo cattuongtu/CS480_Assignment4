@@ -22,13 +22,13 @@ CXXFLAGS=-std=c11 -g
 rideshare :  io.o consumers.o producers.o main.o
 	$(CXX) $(CXXFLAGS) -pthread -o rideshare -lpthread $^
 
-main.o : main.h production.h io.h consumers.h producers.h ridesharing.h main.c
+main.o : main.h io.h consumers.h producers.h ridesharing.h main.cpp
 
-io.o : main.h io.h io.C
+io.o : main.h io.h io.c
 
-consumers.o : main.h consumers.h consumers.c
+consumers.o : main.h consumers.h consumers.cpp
 
-producers.o : main.h producers.h producers.c
+producers.o : main.h producers.h producers.cpp
 
 
 clean :

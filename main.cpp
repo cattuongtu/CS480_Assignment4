@@ -6,14 +6,18 @@ int main(int argc, char *argv[]){
 
     //Variable initalization
     buffer *rides = new buffer;
+    rides->ridesQueue = new queue<Request*>;
     rides-> productionLimit = MAX_RIDES;
     rides->consumerTime = DEFAULT;
+    rides->consumerTimeBool = false;
     rides->matchingDispatcher = DEFAULT;
+    rides->matchingDispatcherBool = false;
     rides->produceRideHuman = DEFAULT;
+    rides->produceRideHumanBool = false;
     rides->produceRideAutonomus = DEFAULT;
-
-
-
+    rides->produceRideAutonomusBool = false;
+    rides->producerId = 0;
+    rides->consumed = 0;
 
 
     sem_init(&rides->mutex, 0,1); //MUTUAL BUFFER ACCESS
@@ -62,4 +66,8 @@ int main(int argc, char *argv[]){
 
 
     return 0;
+}
+
+Request::Request(int id){
+    request_id = id;
 }

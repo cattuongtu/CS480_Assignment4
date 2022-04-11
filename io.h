@@ -35,7 +35,7 @@ void io_add_type(RequestType, int inRequestQueue[], int produced[]);
  *
  * Counts reflect numbers *after* the request has been removed
  */
-void io_remove_type(Consumers, RequestType, int inRequestQueue[], int consumed[]);
+void io_remove_type(ConsumerType, RequestType, int inRequestQueue[], int consumed[]);
 
 /*
  * void io_production_report(int produced[], int *consumed[])

@@ -27,8 +27,9 @@ class Request{
 
 struct buffer{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit;
-    //bool yes;
-    int productionLimit, consumerTime, matchingDispatcher, produceRideHuman, produceRideAutonomus;
+    bool consumerTimeBool, matchingDispatcherBool, produceRideHumanBool, produceRideAutonomusBool;
+    int productionLimit, consumerTime, matchingDispatcher, produceRideHuman, produceRideAutonomus, producerId, consumerId, consumed;
+    int inQueue[2], Produced[2]; //Don't understand
     int **totals;
     queue<Request*> *ridesQueue;
 };

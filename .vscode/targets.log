@@ -6,7 +6,7 @@ make all -f /home/raul/projects/Assignment2/.vscode/Makefile --print-data-base -
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Apr 10 18:57:16 2022
+# Make data base, printed on Sun Apr 10 19:23:25 2022
 
 # Variables
 
@@ -30,9 +30,6 @@ VSCODE_LOG_NATIVE = false
 CURDIR := /home/raul/projects/Assignment4/CS480_Assignment4
 # makefile
 SHELL = /bin/sh
- 
-make: *** No rule to make target 'all'.  Stop.
-
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
@@ -273,6 +270,8 @@ dicttree.h:
 # strcache performance: lookups = 38 / hit rate = 47%
 # hash-table stats:
 # Load=20/8192=0%, Rehash=0, Collisions=0/38=0%
-# Finished Make data base on Sun Apr 10 18:57:16 2022
+# Finished Make data base on Sun Apr 10 19:23:25 2022
 
  
+make: *** No rule to make target 'all'.  Stop.
+

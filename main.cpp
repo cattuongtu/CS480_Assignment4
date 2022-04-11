@@ -32,26 +32,31 @@ int main(int argc, char *argv[]){
         switch (Option){
             case 'n':
                 //User set limit
+                printf("n: %s\n",optarg);
                 rides->productionLimit = atoi(optarg);
                 break;
             case 'c':
                 //Number of milliseconds that cost-saving 
                 //dispatcher requires dispatching a request
+                printf("c: %s\n",optarg);
                 rides->consumerTime = atoi(optarg);
                 break;
             case 'f':
                 //Number of milliseconds that fast-matching dispatcher
                 //requires dispatching a request
+                printf("f: %s\n",optarg);
                 rides->matchingDispatcher = atoi(optarg);
                 break;
             case 'h':
                 //number of milliseconds required to produce a ride 
                 //request for a human driver
+                printf("h: %s\n",optarg);
                 rides->produceRideHuman = atoi(optarg);
                 break;
             case 'a':
                 //number of milliseconds required to produce a ride request for
                 //an autonomous car
+                printf("a: %s\n",optarg);
                 rides->produceRideAutonomus = atoi(optarg);
                 break;
             default:
@@ -59,7 +64,7 @@ int main(int argc, char *argv[]){
         }
     }
 
-    pthread_t HDR, RDR, CostAD, FastAD;
+    //pthread_t HDR, RDR, CostAD, FastAD;
 
 
 

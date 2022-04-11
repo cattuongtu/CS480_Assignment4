@@ -5,6 +5,6 @@
 #include "io.h"
 
 
-void *Producers(void *arg);
+void *Producer(void *arg);
 
 #endif

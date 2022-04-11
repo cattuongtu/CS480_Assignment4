@@ -13,8 +13,9 @@
 #include <semaphore.h>
 #include <string>
 #include <pthread.h>
-//#include "production.h"
-
+#include "ridesharing.h"
+#include "producers.h"
+#include "consumers.h"
 
 using namespace std;
 
@@ -27,8 +28,8 @@ class Request{
 
 struct buffer{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit;
-    bool consumerTimeBool, matchingDispatcherBool, produceRideHumanBool, produceRideAutonomusBool;
-    int productionLimit, consumerTime, matchingDispatcher, produceRideHuman, produceRideAutonomus, producerId, consumerId, consumed;
+    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideAutonomusBool;
+    int productionLimit, costSaveTime, fastRideTime, produceRideHuman, produceRideAutonomus, producerId, consumerId, consumed;
     int inQueue[2], Produced[2]; //Don't understand
     int **totals;
     queue<Request*> *ridesQueue;

@@ -1,4 +1,5 @@
 #include "consumers.h"
+#include "io.h"
 
 void *Consumer(void *arg){
     buffer *_rides = (buffer*) arg;

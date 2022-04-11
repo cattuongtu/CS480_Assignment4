@@ -1,4 +1,5 @@
 #include "producers.h"
+#include "io.h"
 
 void *Producer(void *arg){
     buffer * _rides = (buffer*) arg;

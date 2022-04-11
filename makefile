@@ -24,11 +24,11 @@ rideshare :  io.o consumers.o producers.o main.o
 
 main.o : main.h io.h consumers.h producers.h ridesharing.h main.cpp
 
-io.o : main.h io.h io.c
+io.o : ridesharing.h main.h io.h io.c
 
-consumers.o : main.h consumers.h consumers.cpp
+consumers.o : ridesharing.h main.h consumers.h consumers.cpp
 
-producers.o : main.h producers.h producers.cpp
+producers.o : ridesharing.h main.h producers.h producers.cpp
 
 
 clean :

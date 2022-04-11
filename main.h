@@ -37,10 +37,16 @@ class Request{
 //Buffer Structure that holds all relavent variables, queues, and arrays to be used in all the files
 struct buffer{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
-    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideAutonomusBool;
-    int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideAutonomus, producerId, consumerId, consumed;
-    int inRequestQueue[2], Produced[2]; //Don't understand
+    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs
+    //Integers for maxamount of rides, times, consumed total, producerID and consumerID
+    int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
+    //number of rides inRequestQueue on both Human and Robot
+    //Number of produced rides Human and Robot
+    int inRequestQueue[2], Produced[2];
+    //Stores the total amount of rides consumed by
+    //Cost save dispatch and fast dispatch
     int **totals;
+    //Que of Requests
     queue<Request*> *ridesQueue;
 };
 

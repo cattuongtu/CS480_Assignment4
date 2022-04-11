@@ -14,9 +14,9 @@ void *Producer(void *arg){
             sem_wait(&new_rides->maxHumanDrivers);
         }
         else if(rideID == 1){
-            if(new_rides->produceRideAutonomusBool){
+            if(new_rides->produceRideRoboBool){
                 //multiplies wait time by 1000 sinc usleep is in microseconds
-                usleep(new_rides->produceRideAutonomus * MULTIPLE_FOR_SECONDS); 
+                usleep(new_rides->produceRideRobo * MULTIPLE_FOR_SECONDS); 
             }
         }
         Request *request = new Request(rideID);

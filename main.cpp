@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
     rides->costSaveRideBool = false;
     rides->fastRideBool = false;
     rides->produceRideHumanBool = false;
-    rides->produceRideAutonomusBool = false;
+    rides->produceRideRoboBool = false;
     //Sets ProducerID to 0 at beginning
     rides->producerId = DEFAULT;
     //Sets consumed to 0 at beginning
@@ -60,8 +60,8 @@ int main(int argc, char *argv[]){
                 //number of milliseconds required to produce a ride request for
                 //an autonomous car
                 //Assigns variable and sets bool to true for wait time exists
-                rides->produceRideAutonomusBool =true;
-                rides->produceRideAutonomus = atoi(optarg);
+                rides->produceRideRoboBool =true;
+                rides->produceRideRobo = atoi(optarg);
                 break;
             default:
                 break;

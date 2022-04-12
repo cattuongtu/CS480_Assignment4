@@ -45,7 +45,7 @@ struct buffer{
     int inRequestQueue[2], Produced[2];
     //Stores the total amount of rides consumed by
     //Cost save dispatch and fast dispatch
-    int **totals;
+    int **consumedTotals;
     //Que of Requests
     queue<Request*> *ridesQueue;
 };

@@ -16,14 +16,14 @@ int main(int argc, char *argv[]){
     //Sets consumed to 0 at beginning
     rides->consumed = DEFAULT;
     
-    //Initalizes and populates totals 2D int array to 0
-    rides->totals = new int*[NUMBER_OF_TYPES];
+    //Initalizes and populates consumed consumedTotals 2D int array to 0
+    rides->consumedTotals = new int*[NUMBER_OF_TYPES];
     for(int i = 0; i < NUMBER_OF_TYPES; i++){
         rides->inRequestQueue[i] = DEFAULT;
         rides->Produced[i] = DEFAULT;
-        rides->totals[i] = new int[NUMBER_OF_TYPES];
+        rides->consumedTotals[i] = new int[NUMBER_OF_TYPES];
         for(int j = 0; j < NUMBER_OF_TYPES; ++j){
-            rides->totals[i][j] = DEFAULT;
+            rides->consumedTotals[i][j] = DEFAULT;
         }
     }
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
     pthread_join(FastAD, NULL);
 
     //Prints Report
-    io_production_report(rides->Produced, rides->totals);
+    io_production_report(rides->Produced, rides->consumedTotals);
 
     return 0;
 }

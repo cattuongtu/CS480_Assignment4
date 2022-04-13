@@ -2,9 +2,7 @@
 #define PRODUCERS_H
 
 #include "main.h"
-#include "io.h"
 
-
-void *Producers(void *arg);
+void *Producer(void *arg);
 
 #endif

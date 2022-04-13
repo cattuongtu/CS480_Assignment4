@@ -1,5 +1,6 @@
-make -f /home/raul/projects/Assignment2/.vscode/Makefile --dry-run --keep-going --print-directory
+make -f /home/raul/projects/Assignment2/.vscode/Makefile --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/raul/projects/Assignment4/CS480_Assignment4'
+make: Leaving directory '/home/raul/projects/Assignment4/CS480_Assignment4'
  
 make: *** No rule to make target 'main.c', needed by 'main.o'.
 make: *** No rule to make target 'dicttree.h', needed by 'main.o'.
@@ -9,5 +10,3 @@ make: *** No rule to make target 'dicttree.c', needed by 'dicttree.o'.
 make: *** No rule to make target 'populatetree.c', needed by 'populatetree.o'.
 make: *** No rule to make target 'countwords.c', needed by 'countwords.o'.
 
-make: Leaving directory '/home/raul/projects/Assignment4/CS480_Assignment4'
- 

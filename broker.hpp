@@ -26,7 +26,7 @@
 
 using namespace std;
 
-struct buffer{
+struct Broker{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
     
     bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs

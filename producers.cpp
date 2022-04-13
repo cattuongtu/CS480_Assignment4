@@ -1,8 +1,8 @@
 #include "producers.hpp"
 
 /*void *Producer(void *arg){
-    //create a new buff struct to reference incoming buff
-    buffer* new_rides = (buffer*) arg;
+    //create a new broker struct to reference incoming broker
+    Broker* new_rides = (Broker*) arg;
     //Declares rideID
     int rideID = new_rides->producerId;
     ++new_rides->producerId;
@@ -44,39 +44,39 @@
 
 //Test Codes
 void *Producer(void *arg){
-     //create a new buff struct to reference incoming buff
-    buffer *buff = (buffer*)arg;
+     //create a new broker struct to reference
+    Broker *broker = (Broker*)arg;
     //Declares rideID
-    int rideID = buff->producerId;
-    ++buff->producerId;
+    int rideID = broker->producerId;
+    ++broker->producerId;
     //Item to be inserted either human or robo request
-    while(!sem_trywait(&buff->limit)){ //Checks to see if rides produced has reached MAX Rides
+    while(!sem_trywait(&broker->limit)){ //Checks to see if rides produced has reached MAX Rides
         if(rideID == HumanDriver){ //Checks to see if rideID is for human driver
-            if(buff->produceRideHumanBool){ //Checks to see if time option was inputed for humanDriver
-                usleep(buff->produceRideHuman * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
+            if(broker->produceRideHumanBool){ //Checks to see if time option was inputed for humanDriver
+                usleep(broker->produceRideHuman * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
             }
-            sem_wait(&buff->maxHumanDrivers); //checks to see if max human drivers is reached, if has then it waits until one is consumed
+            sem_wait(&broker->maxHumanDrivers); //checks to see if max human drivers is reached, if has then it waits until one is consumed
         }
         else if(rideID == RoboDriver){ //Checks to see if rideID is for robo driver
-            if(buff->produceRideRoboBool){ //Checks to see if time option was inputed for roboDriver
-                usleep(buff->produceRideRobo * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
+            if(broker->produceRideRoboBool){ //Checks to see if time option was inputed for roboDriver
+                usleep(broker->produceRideRobo * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
             }
         }
-        sem_wait(&buff->availableSlots); //Checks for available slots in queue, if no slots available then waits
-        sem_wait(&buff->mutex); //Checks if it has key to access critical section
-        buff->ridesQueue->push(rideID); //pushes request into queue
+        sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits
+        sem_wait(&broker->mutex); //Checks if it has key to access critical section
+        broker->ridesQueue->push(rideID); //pushes request into queue
 
-        ++buff->inRequestQueue[rideID]; //number of request in request Queue for given rideID
-        ++buff->Produced[rideID]; //increases the number of produced riders for given rideID
+        ++broker->inRequestQueue[rideID]; //number of request in request Queue for given rideID
+        ++broker->Produced[rideID]; //increases the number of produced riders for given rideID
 
         if(rideID == HumanDriver){ //Checks to see if human driver was created
-            io_add_type(HumanDriver, buff->inRequestQueue, buff->Produced); //print statement for io
+            io_add_type(HumanDriver, broker->inRequestQueue, broker->Produced); //print statement for io
         }
         else if(rideID == RoboDriver){ //checks to see if robo driver was created
-            io_add_type(RoboDriver, buff->inRequestQueue, buff->Produced); //print statement for io
+            io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); //print statement for io
         }
-        sem_post(&buff->mutex); //releases key and exits the critical section
-        sem_post(&buff->unconsumed); //increases the 
+        sem_post(&broker->mutex); //releases key and exits the critical section
+        sem_post(&broker->unconsumed); //increases the 
     }
     return NULL;
 }

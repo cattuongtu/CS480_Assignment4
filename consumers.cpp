@@ -1,4 +1,4 @@
-#include "consumers.h"
+#include "consumers.hpp"
 
 /*void *Consumer(void *arg){
     //create a new buffer struct to reference incoming buffer

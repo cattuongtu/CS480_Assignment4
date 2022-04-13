@@ -5,7 +5,7 @@ int main(int argc, char *argv[]){
     Broker *broker = new Broker;
     broker->ridesQueue = new queue<int>;
     broker->maxRides = MAX_RIDES_DEFAULT; //Sets Max Rides to Default 120
-    //Sets wait time booleans to false ate beginning
+    //Sets wait time booleans to false at beginning
     broker->costSaveRideBool = false;
     broker->fastRideBool = false;
     broker->produceRideHumanBool = false;
@@ -14,6 +14,8 @@ int main(int argc, char *argv[]){
 
     //Sets ProducerID to 0 at beginning
     broker->producerId = DEFAULT;
+    //Sets ConsumerID to 0 at beginning
+    broker->consumerId = DEFAULT;
     //Sets consumed to 0 at beginning
     broker->consumed = DEFAULT;
     
@@ -71,10 +73,10 @@ int main(int argc, char *argv[]){
 
     //Initalizes all the semaphores within Broker struct
     sem_init(&broker->mutex, 0,1); //Buffer Access key
-    sem_init(&broker->unconsumed, 0 ,0); //Available ride requests
+    sem_init(&broker->unUsedRides, 0 ,0); //Available ride requests
     sem_init(&broker->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS); //Max ammount of ride requests in a queue
     sem_init(&broker->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); //Max amount of ride requests for human drivers to be produced
-    sem_init(&broker->limit, 0, broker->maxRides); //max amount of broker before stopping
+    sem_init(&broker->maxRidesAchieved, 0, broker->maxRides); //max amount of broker before stopping
 
     //Declares the threads for each producer and consumer
     pthread_t HDR, RDR, CostAD, FastAD;
@@ -96,10 +98,10 @@ int main(int argc, char *argv[]){
 
     //Destroy semaphores to avoid memory leaks
     sem_destroy(&broker->mutex);
-    sem_destroy(&broker->unconsumed);
+    sem_destroy(&broker->unUsedRides);
     sem_destroy(&broker->availableSlots);
     sem_destroy(&broker->maxHumanDrivers);
-    sem_destroy(&broker->limit);
+    sem_destroy(&broker->maxRidesAchieved);
 
     return 0;
 }

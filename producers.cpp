@@ -50,13 +50,13 @@ void *Producer(void *arg){
     ++buff->producerId;
     //Item to be inserted either human or robo request
     while(!sem_trywait(&buff->limit)){
-        if(rideID == HUMAN_DRIVER_ID){
+        if(rideID == HumanDriver){
             if(buff->produceRideHumanBool){
                 usleep(buff->produceRideHuman * MULTIPLE_FOR_SECONDS);
             }
             sem_wait(&buff->maxHumanDrivers);
         }
-        else if(rideID == ROBO_DRIVER_ID){
+        else if(rideID == RoboDriver){
             if(buff->produceRideRoboBool){
                 usleep(buff->produceRideRobo * MULTIPLE_FOR_SECONDS);
             }
@@ -68,10 +68,10 @@ void *Producer(void *arg){
         ++buff->inRequestQueue[rideID]; //number of request in request Queue
         ++buff->Produced[rideID]; //increases the number of produced riders
 
-        if(rideID == HUMAN_DRIVER_ID){ //Checks to see if human driver was created
+        if(rideID == HumanDriver){ //Checks to see if human driver was created
             io_add_type(HumanDriver, buff->inRequestQueue, buff->Produced);
         }
-        else if(rideID == ROBO_DRIVER_ID){ //checks to see if robo driver was created
+        else if(rideID == RoboDriver){ //checks to see if robo driver was created
             io_add_type(RoboDriver, buff->inRequestQueue, buff->Produced);
         }
         sem_post(&buff->mutex); //Exits the critical section

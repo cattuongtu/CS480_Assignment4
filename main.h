@@ -10,10 +10,6 @@
 #define MAX_REQUEST_HUMAN_DRIVERS 4
 #define MULTIPLE_FOR_SECONDS 1000
 #define NUMBER_OF_TYPES 2
-#define HUMAN_DRIVER_ID 0
-#define ROBO_DRIVER_ID 1
-#define COST_ALGO 0
-#define FAST_ALGO 1
 
 //All includes to be used
 #include <queue>

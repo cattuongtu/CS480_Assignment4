@@ -69,13 +69,13 @@ void *Consumer(void *arg){
     ++buff->consumerId;
     while(buff->consumed != buff->maxRides){ //Checks to see if consumed is not equal to maxrides
         while(!sem_trywait(&buff->unconsumed)){ //Checks to see there are unconsumed rides in queue
-            if(consumer == COST_ALGO){
+            if(consumer == CostAlgoDispatch){
                 if(buff->costSaveRideBool){ //Checks to see if time option was inputed for cost save
                     //multiplies wait time by 1000 since usleep is in microseconds
                     usleep(buff->costSaveTime * MULTIPLE_FOR_SECONDS);
                 }
             }
-            else if(consumer == FAST_ALGO){
+            else if(consumer == FastAlgoDispatch){
                 if(buff->fastRideBool){ //Checks to see if time option was inputed for fast drive
                     //multiplies wait time by 1000 since usleep is in microseconds
                     usleep(buff->fastRideTime * MULTIPLE_FOR_SECONDS);
@@ -90,27 +90,27 @@ void *Consumer(void *arg){
             ++buff->consumedTotals[consumer][request]; //Increases the consumed totals in 2D consumedTotals array
 
             //Print statements
-            if(consumer == COST_ALGO){
-                int costSave[RequestTypeN] = {buff->consumedTotals[consumer][0], buff->consumedTotals[consumer][1]};
-                if(request == HUMAN_DRIVER_ID){
+            if(consumer == CostAlgoDispatch){ //checks if consumer was cost algo
+                int costSave[RequestTypeN] = {buff->consumedTotals[consumer][CostAlgoDispatch], buff->consumedTotals[consumer][FastAlgoDispatch]};
+                if(request == HumanDriver){
+                    sem_post(&buff->maxHumanDrivers); //If request was human, frees up space for human request from max of 4
                     io_remove_type(CostAlgoDispatch, HumanDriver, buff->inRequestQueue, costSave);
                 }
-                if(request == ROBO_DRIVER_ID){
+                if(request == RoboDriver){
                     io_remove_type(CostAlgoDispatch, RoboDriver, buff->inRequestQueue, costSave);
                 }
             }
-            else if(consumer == FAST_ALGO){
-                int fastRide[RequestTypeN] = {buff->consumedTotals[consumer][0], buff->consumedTotals[consumer][1]};
-                if(request == HUMAN_DRIVER_ID){
+            else if(consumer == FastAlgoDispatch){ //checks if consumer is fast algo
+                int fastRide[RequestTypeN] = {buff->consumedTotals[consumer][CostAlgoDispatch], buff->consumedTotals[consumer][FastAlgoDispatch]};
+                if(request == HumanDriver){ //Checks if request was a human
+                    sem_post(&buff->maxHumanDrivers); //If request was human, frees up space for human request from max of 4
                     io_remove_type(FastAlgoDispatch, HumanDriver, buff->inRequestQueue, fastRide);
                 }
-                if(request == ROBO_DRIVER_ID){
+                if(request == RoboDriver){ //checks if request was a robo
                     io_remove_type(FastAlgoDispatch, RoboDriver, buff->inRequestQueue, fastRide);
                 }
             }
-            if(request == HUMAN_DRIVER_ID){
-                sem_post(&buff->maxHumanDrivers); //Available for another human driver due to limit of 4
-            }
+
             sem_post(&buff->mutex); //End of critical section
             sem_post(&buff->availableSlots); //Available slot becomes open
             ++buff->consumed;

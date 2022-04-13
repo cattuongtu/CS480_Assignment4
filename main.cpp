@@ -1,31 +1,30 @@
-#include "main.h"
+#include "broker.hpp"
 
 int main(int argc, char *argv[]){
 
-    //Variable initalization for all varibles in struct buffer
-    buffer *rides = new buffer;
-    rides->ridesQueue = new queue<int>;
-    rides->maxRides = MAX_RIDES_DEFAULT; //Sets Max Rides to Default 120
+    Broker *broker = new Broker;
+    broker->ridesQueue = new queue<int>;
+    broker->maxRides = MAX_RIDES_DEFAULT; //Sets Max Rides to Default 120
     //Sets wait time booleans to false ate beginning
-    rides->costSaveRideBool = false;
-    rides->fastRideBool = false;
-    rides->produceRideHumanBool = false;
-    rides->produceRideRoboBool = false;
+    broker->costSaveRideBool = false;
+    broker->fastRideBool = false;
+    broker->produceRideHumanBool = false;
+    broker->produceRideRoboBool = false;
 
 
     //Sets ProducerID to 0 at beginning
-    rides->producerId = DEFAULT;
+    broker->producerId = DEFAULT;
     //Sets consumed to 0 at beginning
-    rides->consumed = DEFAULT;
+    broker->consumed = DEFAULT;
     
     //Initalizes and populates consumedTotals 2D int array to 0
-    rides->consumedTotals = new int*[NUMBER_OF_TYPES];
+    broker->consumedTotals = new int*[NUMBER_OF_TYPES];
     for(int i = 0; i < NUMBER_OF_TYPES; i++){
-        rides->inRequestQueue[i] = DEFAULT;
-        rides->Produced[i] = DEFAULT;
-        rides->consumedTotals[i] = new int[NUMBER_OF_TYPES];
+        broker->inRequestQueue[i] = DEFAULT;
+        broker->Produced[i] = DEFAULT;
+        broker->consumedTotals[i] = new int[NUMBER_OF_TYPES];
         for(int j = 0; j < NUMBER_OF_TYPES; ++j){
-            rides->consumedTotals[i][j] = DEFAULT;
+            broker->consumedTotals[i][j] = DEFAULT;
         }
     }
 
@@ -34,57 +33,57 @@ int main(int argc, char *argv[]){
     while((Option = getopt(argc, argv, "n:c:f:h:a:")) != -1){
         switch (Option){
             case 'n':
-                //User set limit for max amount of rides
-                rides->maxRides = atoi(optarg);
+                //User set limit for max amount of broker
+                broker->maxRides = atoi(optarg);
                 break;
             case 'c':
                 //Number of milliseconds that cost-saving 
                 //dispatcher requires dispatching a request
                 //Assigns variable and sets bool to true for wait time exists
-                rides->costSaveRideBool = true;
-                rides->costSaveTime = atoi(optarg);
+                broker->costSaveRideBool = true;
+                broker->costSaveTime = atoi(optarg);
                 break;
             case 'f':
                 //Number of milliseconds that fast-matching dispatcher
                 //requires dispatching a request
                 //Assigns variable and sets bool to true for wait time exists
-                rides->fastRideBool = true;
-                rides->fastRideTime = atoi(optarg);
+                broker->fastRideBool = true;
+                broker->fastRideTime = atoi(optarg);
                 break;
             case 'h':
                 //Number of milliseconds required to produce a ride 
                 //request for a human driver
                 //Assigns variable and sets bool to true for wait time exists
-                rides->produceRideHumanBool =true;
-                rides->produceRideHuman = atoi(optarg);
+                broker->produceRideHumanBool =true;
+                broker->produceRideHuman = atoi(optarg);
                 break;
             case 'a':
                 //number of milliseconds required to produce a ride request for
                 //an autonomous car
                 //Assigns variable and sets bool to true for wait time exists
-                rides->produceRideRoboBool =true;
-                rides->produceRideRobo = atoi(optarg);
+                broker->produceRideRoboBool =true;
+                broker->produceRideRobo = atoi(optarg);
                 break;
             default:
                 break;
         }
     }
 
-    //Initalizes all the semaphores within buffer struct
-    sem_init(&rides->mutex, 0,1); //Buffer Access key
-    sem_init(&rides->unconsumed, 0 ,0); //Available ride requests
-    sem_init(&rides->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS); //Max ammount of ride requests in a queue
-    sem_init(&rides->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); //Max amount of ride requests for human drivers to be produced
-    sem_init(&rides->limit, 0, rides->maxRides); //max amount of rides before stopping
+    //Initalizes all the semaphores within Broker struct
+    sem_init(&broker->mutex, 0,1); //Buffer Access key
+    sem_init(&broker->unconsumed, 0 ,0); //Available ride requests
+    sem_init(&broker->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS); //Max ammount of ride requests in a queue
+    sem_init(&broker->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); //Max amount of ride requests for human drivers to be produced
+    sem_init(&broker->limit, 0, broker->maxRides); //max amount of broker before stopping
 
     //Declares the threads for each producer and consumer
     pthread_t HDR, RDR, CostAD, FastAD;
 
     //Creates the threads and runs them
-    pthread_create(&HDR, NULL, Producer, rides);
-    pthread_create(&RDR, NULL, Producer, rides);
-    pthread_create(&CostAD, NULL, Consumer, rides);
-    pthread_create(&FastAD, NULL, Consumer, rides);
+    pthread_create(&HDR, NULL, Producer, broker);
+    pthread_create(&RDR, NULL, Producer, broker);
+    pthread_create(&CostAD, NULL, Consumer, broker);
+    pthread_create(&FastAD, NULL, Consumer, broker);
 
     //Joins the threads
     pthread_join(HDR, NULL);
@@ -93,14 +92,14 @@ int main(int argc, char *argv[]){
     pthread_join(FastAD, NULL);
 
     //Prints the report from io
-    io_production_report(rides->Produced, rides->consumedTotals);
+    io_production_report(broker->Produced, broker->consumedTotals);
 
     //Destroy semaphores to avoid memory leaks
-    sem_destroy(&rides->mutex);
-    sem_destroy(&rides->unconsumed);
-    sem_destroy(&rides->availableSlots);
-    sem_destroy(&rides->maxHumanDrivers);
-    sem_destroy(&rides->limit);
+    sem_destroy(&broker->mutex);
+    sem_destroy(&broker->unconsumed);
+    sem_destroy(&broker->availableSlots);
+    sem_destroy(&broker->maxHumanDrivers);
+    sem_destroy(&broker->limit);
 
     return 0;
 }

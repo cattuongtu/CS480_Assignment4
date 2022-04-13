@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef BROKER_H
+#define BROKER_H
 
 
 //Defines Values for all potential magic numbers in program
@@ -20,30 +20,13 @@
 #include <string>
 #include <pthread.h>
 #include "ridesharing.h"
-#include "producers.h"
-#include "consumers.h"
+#include "producers.hpp"
+#include "consumers.hpp"
 #include "io.h"
 
 using namespace std;
 
-//Buffer Structure that holds all relavent variables, queues, and arrays to be used in all the files
-/*struct buffer{
-    sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
-    
-    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs
-    //Integers for maxamount of rides, times, consumed total, producerID and consumerID
-    int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
-    //number of rides inRequestQueue on both Human and Robot
-    //Number of produced rides Human and Robot
-    int inRequestQueue[2], Produced[2];
-    //Stores the total amount of rides consumed by
-    //Cost save dispatch and fast dispatch
-    int **consumedTotals;
-    //Que of Requests
-    queue<Request*> *ridesQueue;
-};*/
-
-struct buffer{
+struct Broker{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
     
     bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs

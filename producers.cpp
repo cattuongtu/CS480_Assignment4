@@ -44,38 +44,39 @@
 
 //Test Codes
 void *Producer(void *arg){
+     //create a new buff struct to reference incoming buff
     buffer *buff = (buffer*)arg;
     //Declares rideID
     int rideID = buff->producerId;
     ++buff->producerId;
     //Item to be inserted either human or robo request
-    while(!sem_trywait(&buff->limit)){
-        if(rideID == HumanDriver){
-            if(buff->produceRideHumanBool){
-                usleep(buff->produceRideHuman * MULTIPLE_FOR_SECONDS);
+    while(!sem_trywait(&buff->limit)){ //Checks to see if rides produced has reached MAX Rides
+        if(rideID == HumanDriver){ //Checks to see if rideID is for human driver
+            if(buff->produceRideHumanBool){ //Checks to see if time option was inputed for humanDriver
+                usleep(buff->produceRideHuman * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
             }
-            sem_wait(&buff->maxHumanDrivers);
+            sem_wait(&buff->maxHumanDrivers); //checks to see if max human drivers is reached, if has then it waits until one is consumed
         }
-        else if(rideID == RoboDriver){
-            if(buff->produceRideRoboBool){
-                usleep(buff->produceRideRobo * MULTIPLE_FOR_SECONDS);
+        else if(rideID == RoboDriver){ //Checks to see if rideID is for robo driver
+            if(buff->produceRideRoboBool){ //Checks to see if time option was inputed for roboDriver
+                usleep(buff->produceRideRobo * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
             }
         }
-        sem_wait(&buff->availableSlots);
-        sem_wait(&buff->mutex);
-        buff->ridesQueue->push(rideID);
+        sem_wait(&buff->availableSlots); //Checks for available slots in queue, if no slots available then waits
+        sem_wait(&buff->mutex); //Checks if it has key to access critical section
+        buff->ridesQueue->push(rideID); //pushes request into queue
 
-        ++buff->inRequestQueue[rideID]; //number of request in request Queue
-        ++buff->Produced[rideID]; //increases the number of produced riders
+        ++buff->inRequestQueue[rideID]; //number of request in request Queue for given rideID
+        ++buff->Produced[rideID]; //increases the number of produced riders for given rideID
 
         if(rideID == HumanDriver){ //Checks to see if human driver was created
-            io_add_type(HumanDriver, buff->inRequestQueue, buff->Produced);
+            io_add_type(HumanDriver, buff->inRequestQueue, buff->Produced); //print statement for io
         }
         else if(rideID == RoboDriver){ //checks to see if robo driver was created
-            io_add_type(RoboDriver, buff->inRequestQueue, buff->Produced);
+            io_add_type(RoboDriver, buff->inRequestQueue, buff->Produced); //print statement for io
         }
-        sem_post(&buff->mutex); //Exits the critical section
-        sem_post(&buff->unconsumed);
+        sem_post(&buff->mutex); //releases key and exits the critical section
+        sem_post(&buff->unconsumed); //increases the 
     }
     return NULL;
 }

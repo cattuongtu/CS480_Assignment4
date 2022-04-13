@@ -69,13 +69,13 @@ void *Consumer(void *arg){
     ++buff->consumerId;
     while(buff->consumed != buff->maxRides){ //Checks to see if consumed is not equal to maxrides
         while(!sem_trywait(&buff->unconsumed)){ //Checks to see there are unconsumed rides in queue
-            if(consumer == CostAlgoDispatch){
+            if(consumer == COST_ALGO){
                 if(buff->costSaveRideBool){ //Checks to see if time option was inputed for cost save
                     //multiplies wait time by 1000 since usleep is in microseconds
                     usleep(buff->costSaveTime * MULTIPLE_FOR_SECONDS);
                 }
             }
-            else if(consumer == FastAlgoDispatch){
+            else if(consumer == FAST_ALGO){
                 if(buff->fastRideBool){ //Checks to see if time option was inputed for fast drive
                     //multiplies wait time by 1000 since usleep is in microseconds
                     usleep(buff->fastRideTime * MULTIPLE_FOR_SECONDS);
@@ -90,25 +90,25 @@ void *Consumer(void *arg){
             ++buff->consumedTotals[consumer][request]; //Increases the consumed totals in 2D consumedTotals array
 
             //Print statements
-            if(consumer == CostAlgoDispatch){
+            if(consumer == COST_ALGO){
                 int costSave[RequestTypeN] = {buff->consumedTotals[consumer][0], buff->consumedTotals[consumer][1]};
-                if(request == HumanDriver){
+                if(request == HUMAN_DRIVER_ID){
                     io_remove_type(CostAlgoDispatch, HumanDriver, buff->inRequestQueue, costSave);
                 }
-                if(request == RoboDriver){
+                if(request == ROBO_DRIVER_ID){
                     io_remove_type(CostAlgoDispatch, RoboDriver, buff->inRequestQueue, costSave);
                 }
             }
-            else if(consumer == FastAlgoDispatch){
+            else if(consumer == FAST_ALGO){
                 int fastRide[RequestTypeN] = {buff->consumedTotals[consumer][0], buff->consumedTotals[consumer][1]};
-                if(request == HumanDriver){
+                if(request == HUMAN_DRIVER_ID){
                     io_remove_type(FastAlgoDispatch, HumanDriver, buff->inRequestQueue, fastRide);
                 }
-                if(request == RoboDriver){
+                if(request == ROBO_DRIVER_ID){
                     io_remove_type(FastAlgoDispatch, RoboDriver, buff->inRequestQueue, fastRide);
                 }
             }
-            if(request == HumanDriver){
+            if(request == HUMAN_DRIVER_ID){
                 sem_post(&buff->maxHumanDrivers); //Available for another human driver due to limit of 4
             }
             sem_post(&buff->mutex); //End of critical section

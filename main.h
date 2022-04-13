@@ -10,6 +10,10 @@
 #define MAX_REQUEST_HUMAN_DRIVERS 4
 #define MULTIPLE_FOR_SECONDS 1000
 #define NUMBER_OF_TYPES 2
+#define HUMAN_DRIVER_ID 0
+#define ROBO_DRIVER_ID 1
+#define COST_ALGO 0
+#define FAST_ALGO 1
 
 //All includes to be used
 #include <queue>
@@ -25,14 +29,6 @@
 #include "io.h"
 
 using namespace std;
-
-/*//Class decleration for Request that holds request_id
-class Request{
-    public:
-        Request(int id);
-        int request_id;
-};*/
-
 
 //Buffer Structure that holds all relavent variables, queues, and arrays to be used in all the files
 /*struct buffer{
@@ -59,7 +55,7 @@ struct buffer{
     int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
     //number of rides inRequestQueue on both Human and Robot
     //Number of produced rides Human and Robot
-    int inRequestQueue[2], Produced[2];
+    int inRequestQueue[NUMBER_OF_TYPES], Produced[NUMBER_OF_TYPES];
     //Stores the total amount of rides consumed by
     //Cost save dispatch and fast dispatch
     int **consumedTotals;

@@ -97,8 +97,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-
-/*//Scope Access to request class for request_id
-Request::Request(int id){
-    request_id = id;
-}*/

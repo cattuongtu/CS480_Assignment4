@@ -26,17 +26,18 @@
 
 using namespace std;
 
-//Class decleration for Request that holds request_id
+/*//Class decleration for Request that holds request_id
 class Request{
     public:
         Request(int id);
         int request_id;
-};
+};*/
 
 
 //Buffer Structure that holds all relavent variables, queues, and arrays to be used in all the files
-struct buffer{
+/*struct buffer{
     sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
+    
     bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs
     //Integers for maxamount of rides, times, consumed total, producerID and consumerID
     int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
@@ -48,6 +49,22 @@ struct buffer{
     int **consumedTotals;
     //Que of Requests
     queue<Request*> *ridesQueue;
+};*/
+
+struct buffer{
+    sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
+    
+    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs
+    //Integers for maxamount of rides, times, consumed total, producerID and consumerID
+    int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
+    //number of rides inRequestQueue on both Human and Robot
+    //Number of produced rides Human and Robot
+    int inRequestQueue[2], Produced[2];
+    //Stores the total amount of rides consumed by
+    //Cost save dispatch and fast dispatch
+    int **consumedTotals;
+    //Que of Requests
+    queue<int> *ridesQueue;
 };
 
 #endif

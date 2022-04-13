@@ -4,13 +4,15 @@ int main(int argc, char *argv[]){
 
     //Variable initalization for all varibles in struct buffer
     buffer *rides = new buffer;
-    rides->ridesQueue = new queue<Request*>;
+    rides->ridesQueue = new queue<int>; //Requests*
     rides->maxRides = MAX_RIDES_DEFAULT; //Sets Max Rides to Default 120
     //Sets wait time booleans to false
     rides->costSaveRideBool = false;
     rides->fastRideBool = false;
     rides->produceRideHumanBool = false;
     rides->produceRideRoboBool = false;
+
+
     //Sets ProducerID to 0 at beginning
     rides->producerId = DEFAULT;
     //Sets consumed to 0 at beginning
@@ -69,7 +71,7 @@ int main(int argc, char *argv[]){
     }
 
 
-    sem_init(&rides->mutex, 0,1); //MUTUAL BUFFER ACCESS
+    sem_init(&rides->mutex, 0,1); //Buffer Access key
     sem_init(&rides->unconsumed, 0 ,0); //Available ride requests
     sem_init(&rides->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS); //Max ammount of ride requests in a queue
     sem_init(&rides->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); //Max amount of ride requests for human drivers to be produced
@@ -96,7 +98,7 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-//Scope Access to request class for request_id
+/*//Scope Access to request class for request_id
 Request::Request(int id){
     request_id = id;
-}
+}*/

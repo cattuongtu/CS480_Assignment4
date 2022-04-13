@@ -27,10 +27,10 @@
 using namespace std;
 
 struct Broker{
-    sem_t mutex, unconsumed, availableSlots, maxHumanDrivers, limit; //All Semaphores to be used
-    
+    sem_t mutex, unUsedRides, availableSlots, maxHumanDrivers, maxRidesAchieved; //All Semaphores to be used
+    queue<int> *ridesQueue;//Que of Requests
     bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; //Booleans for optional argument inputs
-    //Integers for maxamount of rides, times, consumed total, producerID and consumerID
+    //Integers for maxamount of rides, time delays, consumed total, producerID and consumerID
     int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed;
     //number of rides inRequestQueue on both Human and Robot
     //Number of produced rides Human and Robot
@@ -38,8 +38,6 @@ struct Broker{
     //Stores the total amount of rides consumed by
     //Cost save dispatch and fast dispatch
     int **consumedTotals;
-    //Que of Requests
-    queue<int> *ridesQueue;
 };
 
 #endif

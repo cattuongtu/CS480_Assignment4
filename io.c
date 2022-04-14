@@ -7,8 +7,7 @@
  * i/o functions - assumed to be called in a critical section
  */
 
-
-/* Handle C++ namespaces, ignore if compiled in C 
+/* Handle C++ namespaces, ignore if compiled in C
  * C++ usually uses this #define to declare the C++ standard.
  * It will not be defined if a C compiler is used.
  */
@@ -32,7 +31,8 @@ const char *consumerNames[] = {"CostAlgo Dispatcher", "FastAlgo Dispatcher"};
  * show seconds of wall clock time used by the process
  */
 
-double elapsed_s() {
+double elapsed_s()
+{
   const double ns_per_s = 1e9; /* nanoseconds per second */
 
   /* Initialize the first time we call this */
@@ -47,7 +47,8 @@ double elapsed_s() {
    */
   clock_gettime(CLOCK_REALTIME, &t);
 
-  if (firsttime) {
+  if (firsttime)
+  {
     /* first time we've called the function, store the current
      * time.  This will not track the cost of the first item
      * produced, but is a reasonable approximation for the
@@ -57,13 +58,13 @@ double elapsed_s() {
      *  but this approximation provides a simple interface for both
      *  C and C++.)
      */
-    firsttime = 0;  /* don't do this again */
-    start = t;  /* note when we started */
+    firsttime = 0; /* don't do this again */
+    start = t;     /* note when we started */
   }
-  
+
   /* determine time delta from start and convert to s */
-  double s = (t.tv_sec - start.tv_sec) + 
-    (t.tv_nsec - start.tv_nsec) / ns_per_s ;
+  double s = (t.tv_sec - start.tv_sec) +
+             (t.tv_nsec - start.tv_nsec) / ns_per_s;
   return s;
 }
 
@@ -72,7 +73,7 @@ double elapsed_s() {
  * Show that a request has been added to the request queue and print the current
  * status of the broker request queue.
  * Expects:
- * 
+ *
  * requestType:  What kind of request was produced?
  * inRequestQueue:  Array of number of requests of each type that are
  *   in the request queue and have not yet been consumed.
@@ -80,18 +81,20 @@ double elapsed_s() {
  * produced:  Array of number of requests of each type that have been
  *   produced
  *
- * inRequestQueue and produced reflect numbers *after* adding the current request. 
+ * inRequestQueue and produced reflect numbers *after* adding the current request.
  */
-void io_add_type(RequestType requestType, int inRequestQueue[], int produced[]) {
+void io_add_type(RequestType requestType, int inRequestQueue[], int produced[])
+{
   int idx;
   int total;
 
   /* Show what is in the broker request queue */
   printf("Broker: ");
-  total = 0;  /* total produced */
-  for (idx=0; idx < RequestTypeN; idx++) {
+  total = 0; /* total produced */
+  for (idx = 0; idx < RequestTypeN; idx++)
+  {
     if (idx > 0)
-      printf(" + ");  /* separator */
+      printf(" + "); /* separator */
     printf("%d %s", inRequestQueue[idx], producerAbbrevs[idx]);
     total += inRequestQueue[idx];
   }
@@ -103,30 +106,31 @@ void io_add_type(RequestType requestType, int inRequestQueue[], int produced[]) 
   /* Show what has been produced */
   total = 0;
   printf(" Produced: ");
-  for (idx=0; idx < RequestTypeN; idx++) {
-    total += produced[idx];  /* track total produced */
+  for (idx = 0; idx < RequestTypeN; idx++)
+  {
+    total += produced[idx]; /* track total produced */
     if (idx > 0)
-      printf(" + ");  /* separator */
-    printf("%d %s", produced[idx], producerAbbrevs[idx], produced[idx]);
+      printf(" + "); /* separator */
+    printf("%d %s", produced[idx], producerAbbrevs[idx]);
   }
   /* total produced over how long */
   printf(" = %d in %.3f s.\n", total, elapsed_s());
-  //printf(" = %d\n", total);
+  // printf(" = %d\n", total);
 
   /* This is not really needed, but will be helpful for making sure that you
    * see output prior to a segmentation vioilation.  This is not usually a
    * good practice as we want to avoid ending the CPU burst premaurely which
    * this will do, but it is a helpful technique.
    */
-  fflush(stdout);  
+  fflush(stdout);
 };
 
 /*
- * io_remove_type(Consumers consumer, RequestType requestType, 
+ * io_remove_type(Consumers consumer, RequestType requestType,
  *     int inRequestQueue[], int consumed[])
- * Show that an item / request has been removed from the request queue 
+ * Show that an item / request has been removed from the request queue
  * and print the current status of the broker request queue.
- * 
+ *
  * Expects:
  * consumer - Who removed / dispatched the request?
  * requestType:  What kind of request was removed / dispatched?
@@ -139,37 +143,39 @@ void io_add_type(RequestType requestType, int inRequestQueue[], int produced[]) 
  * Counts reflect numbers after the request has been removed / dispatched
  */
 void io_remove_type(ConsumerType consumer, RequestType requestType,
-		    int inRequestQueue[], int consumed[]) {
+                    int inRequestQueue[], int consumed[])
+{
   int idx;
   int total;
 
   /* Show what is in the broker request queue */
   total = 0;
   printf("Broker: ");
-  for (idx=0; idx < RequestTypeN; idx++) {
+  for (idx = 0; idx < RequestTypeN; idx++)
+  {
     if (idx > 0)
-      printf(" + ");  /* separator */
+      printf(" + "); /* separator */
     printf("%d %s", inRequestQueue[idx], producerAbbrevs[idx]);
     total += inRequestQueue[idx];
   }
   printf(" = %d. ", total);
 
-  
   /* Show what has been consumed by consumer */
   printf("%s consumed %s.  %s totals: ",
-    consumerNames[consumer],
-    producerNames[requestType],
-    consumerNames[consumer]);
+         consumerNames[consumer],
+         producerNames[requestType],
+         consumerNames[consumer]);
   total = 0;
-  for (idx = 0; idx < RequestTypeN; idx++) {
+  for (idx = 0; idx < RequestTypeN; idx++)
+  {
     if (idx > 0)
-      printf(" + ");  /* separator */
-    total += consumed[idx];  /* track total consumed */
+      printf(" + ");        /* separator */
+    total += consumed[idx]; /* track total consumed */
     printf("%d %s", consumed[idx], producerAbbrevs[idx]);
   }
   /* total consumed over how long */
   printf(" = %d consumed in %.3f s.\n", total, elapsed_s());
-  //printf(" = %d consumed\n", total);
+  // printf(" = %d consumed\n", total);
 
   /* This is not really needed, but will be helpful for making sure that you
    * see output prior to a segmentation vioilation.  This is not usually a
@@ -179,7 +185,6 @@ void io_remove_type(ConsumerType consumer, RequestType requestType,
   fflush(stdout);
 };
 
-
 /*
  * void io_production_report(int produced[], int *consumed[])
  * Show how many requests of each type produced.  Show how many requests consumed by
@@ -187,28 +192,32 @@ void io_remove_type(ConsumerType consumer, RequestType requestType,
  * produced[] - count for each RequestType
  * consumed[] - array of pointers to consumed arrays for each consumer
  *    e.g. consumed[CostAlgoDispatch] points to an array that is indexed by request type
- *    (consumed[CostAlgoDispatch][HumanDriver] is the number for requesting human drivers 
+ *    (consumed[CostAlgoDispatch][HumanDriver] is the number for requesting human drivers
  *    that the cost based algorithm dispatched)
  */
-void io_production_report(int produced[], int *consumed[]) {
-  int p, c;  /* array indices */
+void io_production_report(int produced[], int *consumed[])
+{
+  int p, c; /* array indices */
   int total;
 
   printf("\nREQUEST REPORT\n----------------------------------------\n");
-   
+
   /* show number produced for each producer / request type */
-  for (p = 0; p < RequestTypeN; p++) {
+  for (p = 0; p < RequestTypeN; p++)
+  {
     printf("%s producer generated %d requests\n",
-	   producerNames[p], produced[p]);
+           producerNames[p], produced[p]);
   }
   /* show number consumed by each consumer */
-  for (c=0; c < ConsumerTypeN; c++) {
+  for (c = 0; c < ConsumerTypeN; c++)
+  {
     printf("%s consumed ", consumerNames[c]);
     total = 0;
-    for (p = 0; p < RequestTypeN; p++) {
+    for (p = 0; p < RequestTypeN; p++)
+    {
       if (p > 0)
-	printf(" + ");
-    
+        printf(" + ");
+
       total += consumed[c][p];
       printf("%d %s", consumed[c][p], producerAbbrevs[p]);
     }

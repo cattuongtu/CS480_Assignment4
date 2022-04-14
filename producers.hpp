@@ -1,7 +1,7 @@
 #ifndef PRODUCERS_H
 #define PRODUCERS_H
 
-#include "main.h"
+#include "broker.hpp"
 
 void *Producer(void *arg);
 

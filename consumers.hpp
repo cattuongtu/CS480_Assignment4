@@ -1,7 +1,7 @@
 #ifndef CONSUMERS_H
 #define CONSUMERS_H
 
-#include "main.h"
+#include "broker.hpp"
 
 void *Consumer(void *arg);
 

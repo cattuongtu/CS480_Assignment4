@@ -62,6 +62,6 @@ void *Producer(void *arg)
 
         sem_post(&broker->unUsedRides); // increases rides in queue
         sem_post(&broker->mutex);       // releases key and exits the critical section
-        }
+    }
     return NULL;
 }

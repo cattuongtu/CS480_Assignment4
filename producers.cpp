@@ -20,9 +20,10 @@ void *Producer(void *arg){
             }
         }
         
+        sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits until one becomes available
+        sem_wait(&broker->mutex); //Checks if it has key to access critical section
         if(broker->produced < broker->maxRides){
-            sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits until one becomes available
-            sem_wait(&broker->mutex); //Checks if it has key to access critical section
+            
             broker->ridesQueue->push(rideID); //pushes request into queue
             ++broker->produced; //Increases the count for produced
             ++broker->inRequestQueue[rideID]; //Increase number of request in request Queue for given rideID

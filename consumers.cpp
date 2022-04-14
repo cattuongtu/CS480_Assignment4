@@ -21,9 +21,10 @@ void *Consumer(void *arg){
             }
         }
 
+        sem_wait(&broker->unUsedRides);//Checks for unused
+        sem_wait(&broker->mutex); //Critical section
         if(broker->consumed < broker->maxRides){
-            sem_wait(&broker->unUsedRides);//Checks for unused
-            sem_wait(&broker->mutex); //Critical section
+            
             requestID = broker->ridesQueue->front(); //returns the first ride requestID in queue
             --broker->inRequestQueue[requestID];
             broker->ridesQueue->pop(); //removes ride from the queue
@@ -51,9 +52,10 @@ void *Consumer(void *arg){
                         io_remove_type(FastAlgoDispatch, RoboDriver, broker->inRequestQueue, fastRide);
                     }
                 }
-        }
+        
             sem_post(&broker->mutex); //End of critical section
             sem_post(&broker->availableSlots); //Available slot becomes open
+        }
     }
     return NULL;
 }

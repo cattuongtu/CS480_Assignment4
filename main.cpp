@@ -77,6 +77,7 @@ int main(int argc, char *argv[]){
     sem_init(&broker->unUsedRides, 0 ,0); //Available ride requests
     sem_init(&broker->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS); //Max ammount of ride requests in a queue
     sem_init(&broker->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); //Max amount of ride requests for human drivers to be produced
+    
     //Declares the threads for each producer and consumer
     pthread_t HDR, RDR, CostAD, FastAD;
 

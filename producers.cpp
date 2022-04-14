@@ -7,7 +7,7 @@ void *Producer(void *arg){
     int rideID = broker->producerId;
     ++broker->producerId;
     //Item to be inserted either human or robo request
-    while(!sem_trywait(&broker->maxRidesAchieved)){ //Checks to see if rides produced has reached MAX Rides
+    while(broker->produced <= broker->maxRides){ //Checks to see if rides produced has reached MAX Rides
         if(rideID == HumanDriver){ //Checks to see if rideID is for human driver
             if(broker->produceRideHumanBool){ //Checks to see if time option was inputed for humanDriver
                 usleep(broker->produceRideHuman * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
@@ -22,7 +22,7 @@ void *Producer(void *arg){
         sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits
         sem_wait(&broker->mutex); //Checks if it has key to access critical section
         broker->ridesQueue->push(rideID); //pushes request into queue
-
+        ++broker->produced; //Increases the count for produced
         ++broker->inRequestQueue[rideID]; //Increase number of request in request Queue for given rideID
         ++broker->Produced[rideID]; //increases the number of produced riders for given rideID
 
@@ -32,8 +32,9 @@ void *Producer(void *arg){
         else if(rideID == RoboDriver){ //checks to see if robo driver was created
             io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); //print statement for io
         }
+        
         sem_post(&broker->mutex); //releases key and exits the critical section
-        sem_post(&broker->unUsedRides); //increases the 
+        sem_post(&broker->unUsedRides); //increases rides in queue
     }
     return NULL;
 }

@@ -7,8 +7,8 @@ void *Consumer(void *arg){
     int requestID;
     int requester = broker->consumerId;
     ++broker->consumerId;
-    while(broker->consumed != broker->maxRides){ //Checks to see if consumed is not equal to maxrides
-        while(!sem_trywait(&broker->unUsedRides)){ //Checks to see there are unconsumed rides in queue
+    while(broker->consumed <= broker->maxRides){ //Checks to see if consumed is not equal to maxrides
+            sem_wait(&broker->unUsedRides);
             if(requester == CostAlgoDispatch){
                 if(broker->costSaveRideBool){ //Checks to see if time option was inputed for cost save
                     //multiplies wait time by 1000 since usleep is in microseconds
@@ -21,12 +21,11 @@ void *Consumer(void *arg){
                     usleep(broker->fastRideTime * MULTIPLE_FOR_SECONDS);
                 }
             }
-
             sem_wait(&broker->mutex); //Critical section
             requestID = broker->ridesQueue->front(); //returns the first ride requestID in queue
             --broker->inRequestQueue[requestID];
             broker->ridesQueue->pop(); //removes ride from the queue
-
+            ++broker->consumed;
             ++broker->consumedTotals[requester][requestID]; //Increases the consumed totals in 2D consumedTotals array
 
             //Print statements
@@ -50,11 +49,8 @@ void *Consumer(void *arg){
                     io_remove_type(FastAlgoDispatch, RoboDriver, broker->inRequestQueue, fastRide);
                 }
             }
-
             sem_post(&broker->mutex); //End of critical section
             sem_post(&broker->availableSlots); //Available slot becomes open
-            ++broker->consumed;
-        } 
     }
     return NULL;
 }

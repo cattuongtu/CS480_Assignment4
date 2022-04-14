@@ -19,18 +19,21 @@ void *Producer(void *arg){
                 usleep(broker->produceRideRobo * MULTIPLE_FOR_SECONDS); //Sleeps for given seconds
             }
         }
-        sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits until one becomes available
-        sem_wait(&broker->mutex); //Checks if it has key to access critical section
-        broker->ridesQueue->push(rideID); //pushes request into queue
-        ++broker->produced; //Increases the count for produced
-        ++broker->inRequestQueue[rideID]; //Increase number of request in request Queue for given rideID
-        ++broker->Produced[rideID]; //increases the number of produced riders for given rideID
+        
+        if(broker->produced < broker->maxRides){
+            sem_wait(&broker->availableSlots); //Checks for available slots in queue, if no slots available then waits until one becomes available
+            sem_wait(&broker->mutex); //Checks if it has key to access critical section
+            broker->ridesQueue->push(rideID); //pushes request into queue
+            ++broker->produced; //Increases the count for produced
+            ++broker->inRequestQueue[rideID]; //Increase number of request in request Queue for given rideID
+            ++broker->Produced[rideID]; //increases the number of produced riders for given rideID
 
-        if(rideID == HumanDriver){ //Checks to see if human driver was created
-            io_add_type(HumanDriver, broker->inRequestQueue, broker->Produced); //print statement for io
-        }
-        else if(rideID == RoboDriver){ //checks to see if robo driver was created
-            io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); //print statement for io
+            if(rideID == HumanDriver){ //Checks to see if human driver was created
+                io_add_type(HumanDriver, broker->inRequestQueue, broker->Produced); //print statement for io
+            }
+            else if(rideID == RoboDriver){ //checks to see if robo driver was created
+                io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); //print statement for io
+            }
         }
         sem_post(&broker->mutex); //releases key and exits the critical section
         sem_post(&broker->unUsedRides); //increases rides in queue

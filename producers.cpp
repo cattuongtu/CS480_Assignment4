@@ -8,8 +8,6 @@ void *Producer(void *arg)
     int rideID = broker->producerId;
     ++broker->producerId;
     // Item to be inserted either human or robo request
-    cout << "There are " << broker->produced << " items produced,"
-         << "RideID " << rideID << endl;
     while (broker->produced < broker->maxRides)
     { // Checks to see if rides produced has reached MAX Rides
         if (rideID == HumanDriver)
@@ -46,19 +44,6 @@ void *Producer(void *arg)
                 io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); // print statement for io
             }
         }
-        // broker->ridesQueue->push(rideID);  // pushes request into queue
-        // ++broker->produced;                // Increases the count for produced
-        // ++broker->inRequestQueue[rideID];  // Increase number of request in request Queue for given rideID
-        // ++broker->Produced[rideID];        // increases the number of produced riders for given rideID
-
-        // if (rideID == HumanDriver)
-        // {                                                                       // Checks to see if human driver was created
-        //     io_add_type(HumanDriver, broker->inRequestQueue, broker->Produced); // print statement for io
-        // }
-        // else if (rideID == RoboDriver)
-        // {                                                                      // checks to see if robo driver was created
-        //     io_add_type(RoboDriver, broker->inRequestQueue, broker->Produced); // print statement for io
-        // }
 
         sem_post(&broker->unUsedRides); // increases rides in queue
         sem_post(&broker->mutex);       // releases key and exits the critical section

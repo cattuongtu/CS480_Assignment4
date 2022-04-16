@@ -90,13 +90,17 @@ int main(int argc, char *argv[])
     sem_init(&broker->unUsedRides, 0, 0);                             // Available ride requests
     sem_init(&broker->availableSlots, 0, RIDE_REQUEST_MAX_SLOTS);     // Max ammount of ride requests in a queue
     sem_init(&broker->maxHumanDrivers, 0, MAX_REQUEST_HUMAN_DRIVERS); // Max amount of ride requests for human drivers to be produced
+    sem_init(&broker->producerBarrier, 0, 0);                         // Barrier to avoid over-producing
+    sem_init(&broker->consumerBarrier, 0, 0);                         // Barrier to avoid over-consuming
     // Declares the threads for each producer and consumer
     pthread_t HDR, RDR, CostAD, FastAD;
 
     // Creates the threads and runs them
     pthread_create(&HDR, NULL, Producer, broker);
+    sem_wait(&broker->producerBarrier); // Barrier to block the producer threads from entering critical section while not satisfying condition produced < maximum
     pthread_create(&RDR, NULL, Producer, broker);
     pthread_create(&CostAD, NULL, Consumer, broker);
+    sem_wait(&broker->consumerBarrier); // Barrier to block the consumer threads from entering critical section while not satisfying condition consumed < maximum
     pthread_create(&FastAD, NULL, Consumer, broker);
 
     // Joins the threads
@@ -113,6 +117,8 @@ int main(int argc, char *argv[])
     sem_destroy(&broker->unUsedRides);
     sem_destroy(&broker->availableSlots);
     sem_destroy(&broker->maxHumanDrivers);
+    sem_destroy(&broker->producerBarrier);
+    sem_destroy(&broker->consumerBarrier);
 
     return 0;
 }

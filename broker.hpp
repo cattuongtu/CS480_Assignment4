@@ -35,17 +35,17 @@ using namespace std;
 
 struct Broker
 {
-    sem_t mutex, unUsedRides, availableSlots, maxHumanDrivers, maxRidesAchieved;    // All Semaphores to be used
-    queue<int> *ridesQueue;                                                         // Que of Requests
-    bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool; // Booleans for optional argument inputs
-    // Integers for maxamount of rides, time delays, consumed total, producerID and consumerID
-    int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed, produced;
-    // number of rides inRequestQueue on both Human and Robot
-    // Number of produced rides Human and Robot
-    int inRequestQueue[NUMBER_OF_TYPES], Produced[NUMBER_OF_TYPES];
-    // Stores the total amount of rides consumed by
-    // Cost save dispatch and fast dispatch
-    int **consumedTotals;
+        sem_t mutex, unUsedRides, availableSlots, maxHumanDrivers, maxRidesAchieved, producerBarrier, consumerBarrier; // All Semaphores to be used
+        queue<int> *ridesQueue;                                                                                        // Que of Requests
+        bool costSaveRideBool, fastRideBool, produceRideHumanBool, produceRideRoboBool;                                // Booleans for optional argument inputs
+        // Integers for maxamount of rides, time delays, consumed total, producerID and consumerID
+        int maxRides, costSaveTime, fastRideTime, produceRideHuman, produceRideRobo, producerId, consumerId, consumed, produced;
+        // number of rides inRequestQueue on both Human and Robot
+        // Number of produced rides Human and Robot
+        int inRequestQueue[NUMBER_OF_TYPES], Produced[NUMBER_OF_TYPES];
+        // Stores the total amount of rides consumed by
+        // Cost save dispatch and fast dispatch
+        int **consumedTotals;
 };
 
 #endif

@@ -75,6 +75,8 @@ void *Consumer(void *arg)
                 usleep(broker->fastRideTime * MULTIPLE_FOR_SECONDS);
             }
         }
+
+        sem_post(&broker->consumerBarrier); // Unblock the consumer thread
     }
     return NULL;
 }

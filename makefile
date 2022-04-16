@@ -3,7 +3,7 @@
 #RedID: 819138431
 #		822204923
 #Class: CS480-01
-#Assignemt 3
+#Assignment 4
 
 CXX=g++
 

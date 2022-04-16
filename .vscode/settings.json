@@ -2,5 +2,6 @@
     "makefile.extensionOutputFolder": "./.vscode",
     "files.associations": {
         "new": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

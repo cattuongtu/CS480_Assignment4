@@ -1,11 +1,3 @@
-/*
-Name: 	Raul Garcia Jr
-        Cat-Tuong Tu
-#RedID: 819138431
-        822204923
-#Class: CS480-01
-#Assignment 4
-*/
 #include "broker.hpp"
 
 int main(int argc, char *argv[])
